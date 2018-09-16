@@ -2,6 +2,47 @@
 Self-Driving Car Engineer Nanodegree Program
 
 ---
+In this project I implemented the Model Predictive Control algorithm to control the car movement around the track in a simulator.
+---
+
+## Model description.
+I used the kinematic model of a vehicle. The model ignores tire forces, gravity and vehicle mass. That makes the model less accurate but more tractable. Since the car speed will not be too high, this model approximates real car dynamics very closely.
+
+The car state is described by 6 elements: 
+- x position
+- y position
+- orientation (psi)
+- current velocity
+- cross track error
+- orientation error 
+The are the update equations for the state:
+
+![model](/images/model.jpg)
+
+There are also two control parameters in the model: 
+- acceleration (between -1(full brake) and 1 (full throttle))
+- steer rotation (between -25 and 25 degrees)
+
+## Timestep Length and Elapsed Duration 
+
+First I choose the prediction horizon value (T). Since the situation on the road changes very quickly, I found reasonable to set T lesser than 1.5 seconds.  
+
+So I tried to set N = 25 and dt = 0.05.
+The car was not leaving the drivable portion of the track surface. But it was slowly reacting on the road turns. 
+
+Then I was decreasing dt by 0.01 every step and slightly increasing N.
+The final values of the parameters are:
+- N = 50
+- dt = 0.02
+Setting dt = 0.01 causes the model to stop working. It's probably because this value is equal to latency, so the model can't predict the points correctly.
+
+## Polynomial Fitting and MPC Preprocessing
+
+To generate a predicted vehicle trajectory, I used the function ```polyfit``` to fit a 3rd order polynomial to the given x and y coordinates representing waypoints. The simulator returns waypoints to map's coordinate system, so I transformed these waypoints into the car's coordinate system coordinates to make it easier to both display them and to calculate the error values.
+
+## Dealing with latency.
+
+The model has control latency of 100ms to mimic the actual car control behavior. So I couldn't use the current state values directly. Instead, I predict the state after 100ms from current using the state update equations where ```dt``` equals the latency value. 
 
 ## Dependencies
 
