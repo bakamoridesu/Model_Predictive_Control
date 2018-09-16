@@ -42,7 +42,9 @@ To generate a predicted vehicle trajectory, I used the function ```polyfit``` to
 
 ## Dealing with latency.
 
-The model has control latency of 100ms to mimic the actual car control behavior. So I couldn't use the current state values directly. Instead, I predict the state after 100ms from current using the state update equations where ```dt``` equals the latency value. 
+The model has control latency of 100ms to mimic the actual car control behavior. So I couldn't use the current state values directly. Instead, I predict the state after 100ms from current using the state update equations where ```dt``` equals the latency value. Then this predicted state is used for MPC algorithm.
+
+
 
 ## Dependencies
 
